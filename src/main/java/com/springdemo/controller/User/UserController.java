@@ -3,6 +3,8 @@ package com.springdemo.controller.User;
 import java.net.URI;
 import java.util.List;
 
+import javax.validation.Valid;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -38,7 +40,7 @@ public class UserController {
 	 * output : CREATED and return the created URI
 	 */
 	@PostMapping (path = "/users")
-	public void createUser(@RequestBody User user){
+	public void createUser(@Valid @RequestBody User user){
 		User savedUser= service.save(user);
 		
 		// how to send the ccreated status - 201
