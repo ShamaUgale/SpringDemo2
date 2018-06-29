@@ -6,6 +6,10 @@ import java.util.List;
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.hateoas.Resource;
+import org.springframework.hateoas.mvc.ControllerLinkBuilder;
+
+import static org.springframework.hateoas.mvc.ControllerLinkBuilder.*;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -26,13 +30,22 @@ public class UserController {
 		return service.findAll();
 	}
 	
+	/*
+	 * HATEOAS - Hypermedia As The Engine Of Application State
+	 */
 	@GetMapping(path = "/users/{id}")
-	public User getUser(@PathVariable int id){
+	public Resource<User> getUser(@PathVariable int id){
 		User found= service.finOne(id);
 		if(found==null){
 			throw new UserNotFoundException("No use found with id - " +id);
 		}
-		return found;
+		
+		//adding allusers link to the response
+		Resource<User> resourse = new Resource<User>(found);
+		ControllerLinkBuilder linkTo=linkTo(methodOn(this.getClass()).getAllUsers());
+		resourse.add(linkTo.withRel("all-users"));
+		
+		return resourse;
 	}
 	
 	/*
